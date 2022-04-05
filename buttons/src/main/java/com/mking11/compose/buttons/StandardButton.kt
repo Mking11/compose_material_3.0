@@ -1,9 +1,11 @@
 package com.mking11.compose.buttons
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Typography
@@ -45,23 +47,43 @@ fun M3Button(
     emphasisLevel: EmphasisLevel = EmphasisLevel.Standard,
     enabled: Boolean = true,
     paddingValues: PaddingValues = ButtonDefaults.ContentPadding,
-    elevation: ButtonElevation? = null,
     text: String,
     testTag: String = ""
 ) {
-    Button(
-        onClick = onClick,
-        modifier = if (!fullWidth) modifier
-            .testTag(testTag)
-            .padding(paddingValues) else modifier
-            .fillMaxWidth()
-            .testTag(testTag)
-            .padding(paddingValues),
-        enabled = enabled,
-        colors = getButtonColor(emphasisLevel),
-        shape = RoundedCornerShape(CornerRadius),
-        elevation = elevation
-    ) {
-        Text(text = text.uppercase(Locale.getDefault()), textAlign = TextAlign.Center)
+    if (android12()) {
+        Button(
+            onClick = onClick,
+            modifier = if (!fullWidth) modifier
+                .testTag(testTag)
+                .padding(paddingValues) else modifier
+                .fillMaxWidth()
+                .testTag(testTag)
+                .padding(paddingValues),
+            enabled = enabled,
+            colors = getButtonColor12(emphasisLevel),
+            shape = RoundedCornerShape(CornerRadius),
+        ) {
+            Text(text = text.uppercase(Locale.getDefault()), textAlign = TextAlign.Center)
+        }
+    } else {
+        androidx.compose.material.Button(
+            onClick = onClick,
+            modifier = if (!fullWidth) modifier
+                .testTag(testTag)
+                .padding(paddingValues) else modifier
+                .fillMaxWidth()
+                .testTag(testTag)
+                .padding(paddingValues),
+            enabled = enabled,
+            colors = getButtonColor(emphasisLevel),
+            shape = RoundedCornerShape(CornerRadius),
+        ) {
+            androidx.compose.material.Text(
+                text = text.uppercase(Locale.getDefault()),
+                textAlign = TextAlign.Center,
+                color = if (isSystemInDarkTheme()) MaterialTheme.colors.onPrimary else Color.Unspecified )
+        }
+
     }
+
 }

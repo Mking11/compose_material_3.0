@@ -15,7 +15,8 @@ enum class EmphasisLevel {
 
 
 @Composable
-fun getButtonColor(emphasisLevel: EmphasisLevel) =
+fun getButtonColor12(emphasisLevel: EmphasisLevel) =
+
     when (emphasisLevel) {
         EmphasisLevel.Standard -> ButtonDefaults.buttonColors()
         EmphasisLevel.HighEmphasis -> ButtonDefaults.buttonColors(
@@ -27,3 +28,19 @@ fun getButtonColor(emphasisLevel: EmphasisLevel) =
             contentColor = Color.White
         )
     }
+
+@Composable
+fun getButtonColor(emphasisLevel: EmphasisLevel) =
+
+    when (emphasisLevel) {
+        EmphasisLevel.Standard -> androidx.compose.material.ButtonDefaults.buttonColors()
+        EmphasisLevel.HighEmphasis -> androidx.compose.material.ButtonDefaults.buttonColors(
+            backgroundColor = LightPink,
+            contentColor = Color.White
+        )
+        EmphasisLevel.Destructive -> androidx.compose.material.ButtonDefaults.buttonColors(
+            contentColor = Color.White,
+            backgroundColor = RedLight
+        )
+    }
+

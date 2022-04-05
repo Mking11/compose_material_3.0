@@ -48,10 +48,41 @@ fun M3ButtonWithIcon(
     icon: @Composable (() -> Unit)
 ) {
 
+    if (android12()) {
+        IconButton12(onClick, modifier, paddingValues, testTag, enabled, iconPlacing, icon, text)
+    } else {
+
+        IconButton(
+            onClick = onClick,
+            modifier = modifier,
+            paddingValues = paddingValues,
+            testTag = testTag,
+            enabled = enabled,
+            iconPlacing = iconPlacing,
+            icon = icon,
+            text = text
+        )
+    }
+
+
+}
+
+@Composable
+private fun IconButton12(
+    onClick: () -> Unit,
+    modifier: Modifier,
+    paddingValues: PaddingValues,
+    testTag: String,
+    enabled: Boolean,
+    iconPlacing: IconPlacing,
+    icon: @Composable () -> Unit,
+    text: String
+) {
     Button(
         onClick = onClick,
         modifier = modifier
-            .padding(paddingValues).testTag(testTag),
+            .padding(paddingValues)
+            .testTag(testTag),
         enabled = enabled,
         shape = RoundedCornerShape(CornerRadius), contentPadding = PaddingValues(6.dp, 6.dp)
     ) {
@@ -106,3 +137,71 @@ fun M3ButtonWithIcon(
 }
 
 
+@Composable
+private fun IconButton(
+    onClick: () -> Unit,
+    modifier: Modifier,
+    paddingValues: PaddingValues,
+    testTag: String,
+    enabled: Boolean,
+    iconPlacing: IconPlacing,
+    icon: @Composable () -> Unit,
+    text: String
+) {
+    androidx.compose.material.Button(
+        onClick = onClick,
+        modifier = modifier
+            .padding(paddingValues)
+            .testTag(testTag),
+        enabled = enabled,
+        shape = RoundedCornerShape(CornerRadius), contentPadding = PaddingValues(6.dp, 6.dp)
+    ) {
+
+        ConstraintLayout {
+            val (text_ref, icon_ref) = createRefs()
+
+            Box(modifier = Modifier.constrainAs(icon_ref) {
+                linkTo(parent.top, parent.bottom)
+                when (iconPlacing) {
+                    IconPlacing.Leading -> {
+                        start.linkTo(parent.start, 0.dp)
+                        end.linkTo(text_ref.start)
+
+                    }
+                    IconPlacing.Trailing -> {
+                        start.linkTo(text_ref.end, 4.dp)
+                        end.linkTo(parent.end, 0.dp)
+
+                    }
+                }
+
+            }
+            ) {
+
+                icon()
+
+            }
+
+
+            androidx.compose.material.Text(
+                text = text.uppercase(Locale.getDefault()),
+                modifier = Modifier.constrainAs(text_ref) {
+                    linkTo(parent.top, parent.bottom)
+                    when (iconPlacing) {
+                        IconPlacing.Leading -> {
+                            start.linkTo(icon_ref.end, 4.dp)
+                            end.linkTo(
+                                parent
+                                    .end, 2.dp
+                            )
+                        }
+                        IconPlacing.Trailing -> {
+                            start.linkTo(parent.start, 8.dp)
+                            end.linkTo(icon_ref.start)
+                        }
+                    }
+                },
+            )
+        }
+    }
+}

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.mking11.compose.buttons.utils.CornerRadius
+import com.mking11.compose.buttons.utils.android12
 import java.util.*
 
 /**
@@ -31,14 +32,30 @@ fun M3TextButton(
     enabled: Boolean = true,
     paddingValues: PaddingValues = ButtonDefaults.ContentPadding,
     text: String,
-    testTag:String=""
+    testTag: String = ""
 ) {
 
-    TextButton(
-        onClick = onClick,
-        modifier = modifier.padding(paddingValues).testTag(testTag),
-        enabled = enabled, shape = RoundedCornerShape(CornerRadius)
-    ) {
-        Text(text = text.uppercase(Locale.getDefault()))
+    if (android12()) {
+        TextButton(
+            onClick = onClick,
+            modifier = modifier
+                .padding(paddingValues)
+                .testTag(testTag),
+            enabled = enabled, shape = RoundedCornerShape(CornerRadius)
+        ) {
+            Text(text = text.uppercase(Locale.getDefault()))
+        }
+    } else {
+        androidx.compose.material.TextButton(
+            onClick = onClick,
+            modifier = modifier
+                .padding(paddingValues)
+                .testTag(testTag),
+            enabled = enabled, shape = RoundedCornerShape(CornerRadius)
+        ) {
+            androidx.compose.material.Text(text = text.uppercase(Locale.getDefault()))
+        }
     }
+
+
 }
